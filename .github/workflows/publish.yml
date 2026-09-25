@@ -63,7 +63,9 @@ jobs:
 
       - name: Refresh docs-site from hostwarden/hostwarden, keeping versioned_docs
         run: |
-          set -e
+          set -ex
+          ls -la hostwarden-src
+          ls -la hostwarden-src/website
           preserve=$(mktemp -d)
           for d in versioned_docs versioned_sidebars; do
             [ -d "docs-site/$d" ] && cp -r "docs-site/$d" "$preserve/$d"
