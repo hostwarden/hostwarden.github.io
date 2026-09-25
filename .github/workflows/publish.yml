@@ -1,0 +1,129 @@
+name: Publish
+
+# docs-updated: hostwarden/hostwarden pushed to website/** — rebuild
+# "Next" from the current source, cut nothing.
+# release-cut: hostwarden/hostwarden tagged a release — same
+# rebuild, and if client_payload.version starts a new major line,
+# freeze it as a Docusaurus version first.
+# workflow_dispatch: a manual rebuild, e.g. after a brand update.
+on:
+  repository_dispatch:
+    types: [docs-updated, release-cut]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true
+
+      - name: Check out hostwarden/hostwarden's website/
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: hostwarden/hostwarden
+          sparse-checkout: website
+          sparse-checkout-cone-mode: false
+          path: hostwarden-src
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.21.0
+
+      - name: Fetch current brand assets
+        run: |
+          set -e
+          BASE=https://raw.githubusercontent.com/hostwarden/brand/main
+          mkdir -p img fonts
+          for f in hostwarden-lockup.svg hostwarden-lockup-invers.svg \
+              hostwarden-signet.svg favicon-16.png favicon-32.png \
+              apple-touch-icon-180.png hostwarden-social-preview.png; do
+            dest=img/$f
+            [ "$f" = hostwarden-social-preview.png ] && dest=img/social-card.png
+            curl -fsSL "$BASE/svg/$f" -o "$dest" 2>/dev/null \
+              || curl -fsSL "$BASE/png/$f" -o "$dest"
+          done
+          for f in BarlowSemiCondensed-Bold.ttf BarlowSemiCondensed-Medium.ttf OFL.txt; do
+            curl -fsSL "$BASE/src/fonts/$f" -o "fonts/$f"
+          done
+
+      - name: Refresh docs-site from hostwarden/hostwarden, keeping versioned_docs
+        run: |
+          set -e
+          preserve=$(mktemp -d)
+          for d in versioned_docs versioned_sidebars; do
+            [ -d "docs-site/$d" ] && cp -r "docs-site/$d" "$preserve/$d"
+          done
+          [ -f docs-site/versions.json ] && cp docs-site/versions.json "$preserve/versions.json"
+          rm -rf docs-site
+          cp -r hostwarden-src/website docs-site
+          for d in versioned_docs versioned_sidebars; do
+            [ -d "$preserve/$d" ] && cp -r "$preserve/$d" "docs-site/$d"
+          done
+          [ -f "$preserve/versions.json" ] && cp "$preserve/versions.json" docs-site/versions.json
+
+      - name: Install docs-site dependencies
+        working-directory: docs-site
+        run: npm ci
+
+      - name: Cut a new Docusaurus version for a new major release line
+        if: github.event.action == 'release-cut'
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        working-directory: docs-site
+        run: |
+          set -e
+          major=${VERSION%%.*}
+          label="${major}.x"
+          if [ -f versions.json ] && grep -q "\"$label\"" versions.json; then
+            echo "::notice::$label already cut, skipping"
+          else
+            npx docusaurus docs:version "$label"
+          fi
+
+      - name: Build docs-site
+        working-directory: docs-site
+        run: npm run build
+
+      - name: Assemble the site
+        run: |
+          set -e
+          rm -rf _site
+          mkdir -p _site
+          cp index.html impressum.html datenschutz.html style.css _site/
+          cp -r img fonts _site/
+          cp -r docs-site/build _site/docs
+
+      - name: Commit versioned docs if a new one was cut
+        run: |
+          set -e
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for p in docs-site/versioned_docs docs-site/versioned_sidebars docs-site/versions.json; do
+            [ -e "$p" ] && git add "$p"
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(docs): freeze a Docusaurus version"
+            git push
+          fi
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

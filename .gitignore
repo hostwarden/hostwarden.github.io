@@ -1,0 +1,15 @@
+# The publish workflow refreshes docs-site/ from hostwarden/hostwarden
+# on every run; only the frozen version snapshots persist here.
+/docs-site/*
+!/docs-site/versioned_docs/
+!/docs-site/versioned_sidebars/
+!/docs-site/versions.json
+
+# Fetched fresh from hostwarden/brand at deploy time, never vendored.
+/img/
+/fonts/
+
+# The assembled deploy output.
+/_site/
+
+.DS_Store

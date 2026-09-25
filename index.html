@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hostwarden</title>
+<meta name="description" content="Rules that turn an AI coding assistant into a cautious sysadmin for Linux, FreeBSD and macOS servers, over SSH or locally.">
+<link rel="icon" href="img/favicon-32.png" sizes="32x32">
+<link rel="icon" href="img/favicon-16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="img/apple-touch-icon-180.png">
+<meta property="og:title" content="Hostwarden">
+<meta property="og:description" content="Rules that turn an AI coding assistant into a cautious sysadmin for Linux, FreeBSD and macOS servers, over SSH or locally.">
+<meta property="og:image" content="img/social-card.png">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="/">
+    <picture>
+      <source srcset="img/hostwarden-lockup-invers.svg" media="(prefers-color-scheme: dark)">
+      <img src="img/hostwarden-lockup.svg" alt="Hostwarden">
+    </picture>
+  </a>
+  <nav>
+    <a href="/docs/">Docs</a>
+    <a href="https://github.com/hostwarden/hostwarden">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <picture>
+    <source srcset="img/hostwarden-signet.svg" media="(prefers-color-scheme: dark)">
+    <img class="hero-mark" src="img/hostwarden-signet.svg" alt="">
+  </picture>
+  <h1>The warden over the hosts</h1>
+  <p class="tagline">
+    Rules that turn an AI coding assistant into a cautious sysadmin
+    for Linux, FreeBSD and macOS servers, over SSH or locally.
+  </p>
+  <div class="cta">
+    <a class="button button--primary" href="/docs/">Read the docs</a>
+    <a class="button button--secondary" href="https://github.com/hostwarden/hostwarden">View on GitHub</a>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h2>Guardrails, not guesswork</h2>
+      <p>Absolute taboos on disk and partition commands, sshd
+      config and keys — enforced by a hook, not just a prompt.</p>
+    </div>
+    <div class="card">
+      <h2>Any OS you actually run</h2>
+      <p>Any Linux distribution, FreeBSD and macOS as full
+      targets; Windows Server reported on read-only over SSH.</p>
+    </div>
+    <div class="card">
+      <h2>No configuration management required</h2>
+      <p>Works by hand on servers Ansible never touched, and
+      through Ansible on the ones it does.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span>&copy; <span id="year"></span> Julian Pawlowski</span>
+  <a href="/impressum.html">Imprint</a>
+  <a href="/datenschutz.html">Privacy</a>
+  <a href="https://github.com/hostwarden/hostwarden/blob/main/LICENSE">License</a>
+</footer>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
