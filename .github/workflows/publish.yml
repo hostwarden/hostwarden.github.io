@@ -115,7 +115,7 @@ jobs:
           set -e
           rm -rf _site
           mkdir -p _site
-          cp index.html impressum.html datenschutz.html style.css _site/
+          cp index.html legal-notice.html privacy-policy.html style.css _site/
           cp -r img fonts _site/
           cp -r docs-site/build _site/docs
 
