@@ -52,8 +52,11 @@ jobs:
           for f in hostwarden-lockup.svg hostwarden-lockup-invers.svg \
               hostwarden-signet.svg favicon-16.png favicon-32.png \
               apple-touch-icon-180.png hostwarden-social-preview.png; do
-            dest=img/$f
-            [ "$f" = hostwarden-social-preview.png ] && dest=img/social-card.png
+            if [ "$f" = hostwarden-social-preview.png ]; then
+              dest=img/social-card.png
+            else
+              dest=img/$f
+            fi
             curl -fsSL "$BASE/svg/$f" -o "$dest" 2>/dev/null \
               || curl -fsSL "$BASE/png/$f" -o "$dest"
           done
@@ -63,20 +66,26 @@ jobs:
 
       - name: Refresh docs-site from hostwarden/hostwarden, keeping versioned_docs
         run: |
-          set -ex
-          ls -la hostwarden-src
-          ls -la hostwarden-src/website
+          set -e
           preserve=$(mktemp -d)
           for d in versioned_docs versioned_sidebars; do
-            [ -d "docs-site/$d" ] && cp -r "docs-site/$d" "$preserve/$d"
+            if [ -d "docs-site/$d" ]; then
+              cp -r "docs-site/$d" "$preserve/$d"
+            fi
           done
-          [ -f docs-site/versions.json ] && cp docs-site/versions.json "$preserve/versions.json"
+          if [ -f docs-site/versions.json ]; then
+            cp docs-site/versions.json "$preserve/versions.json"
+          fi
           rm -rf docs-site
           cp -r hostwarden-src/website docs-site
           for d in versioned_docs versioned_sidebars; do
-            [ -d "$preserve/$d" ] && cp -r "$preserve/$d" "docs-site/$d"
+            if [ -d "$preserve/$d" ]; then
+              cp -r "$preserve/$d" "docs-site/$d"
+            fi
           done
-          [ -f "$preserve/versions.json" ] && cp "$preserve/versions.json" docs-site/versions.json
+          if [ -f "$preserve/versions.json" ]; then
+            cp "$preserve/versions.json" docs-site/versions.json
+          fi
 
       - name: Install docs-site dependencies
         working-directory: docs-site
@@ -116,7 +125,9 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for p in docs-site/versioned_docs docs-site/versioned_sidebars docs-site/versions.json; do
-            [ -e "$p" ] && git add "$p"
+            if [ -e "$p" ]; then
+              git add "$p"
+            fi
           done
           if ! git diff --cached --quiet; then
             git commit -m "chore(docs): freeze a Docusaurus version"
