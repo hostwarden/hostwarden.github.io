@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal Notice — Hostwarden</title>
+<link rel="icon" href="img/favicon-32.png" sizes="32x32">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="/">
+    <picture>
+      <source srcset="img/hostwarden-lockup-invers.svg" media="(prefers-color-scheme: dark)">
+      <img src="img/hostwarden-lockup.svg" alt="Hostwarden">
+    </picture>
+  </a>
+  <nav>
+    <a href="/docs/">Docs</a>
+    <a href="https://github.com/hostwarden/hostwarden">GitHub</a>
+  </nav>
+</header>
+
+<main class="legal">
+  <h1>Legal Notice</h1>
+
+  <p>
+    Julian Pawlowski<br>
+    Paehlstr. 6 B<br>
+    81377 Munich<br>
+    Germany
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Phone: +49 89 420955373<br>
+    Email: julian@pawlowski.me
+  </p>
+
+  <h2>Person responsible for editorial content</h2>
+  <p>
+    Julian Pawlowski<br>
+    Paehlstr. 6 B<br>
+    81377 Munich<br>
+    Germany
+  </p>
+
+  <h2>Dispute resolution proceedings in front of a consumer arbitration board</h2>
+  <p>
+    We are not willing or obliged to participate in dispute
+    resolution proceedings in front of a consumer arbitration
+    board.
+  </p>
+
+  <h2>Software and hosting</h2>
+  <p>
+    This page and the documentation site it links to are static
+    sites built by a GitHub Actions workflow and served by GitHub
+    Pages. The workflow, and this page's own source, are
+    maintained at
+    <a href="https://github.com/hostwarden/hostwarden.github.io">github.com/hostwarden/hostwarden.github.io</a>;
+    the documentation under <code>/docs</code> is built with
+    <a href="https://docusaurus.io/">Docusaurus</a> from
+    <a href="https://github.com/hostwarden/hostwarden">github.com/hostwarden/hostwarden</a>.
+  </p>
+</main>
+
+<footer>
+  <span>&copy; <span id="year"></span> Julian Pawlowski</span>
+  <a href="/legal-notice.html">Legal Notice</a>
+  <a href="/privacy-policy.html">Privacy Policy</a>
+  <a href="https://github.com/hostwarden/hostwarden/blob/main/LICENSE">License</a>
+</footer>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

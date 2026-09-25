@@ -156,12 +156,5 @@
   }
   .legal h1 { font-size: 2rem; margin-bottom: 1.5rem; }
   .legal h2 { font-size: 1.15rem; margin: 2rem 0 0.5rem; }
-  .placeholder-notice {
-    background: var(--card-bg);
-    border: 1px solid var(--signal);
-    border-radius: 0.6rem;
-    padding: 1rem 1.25rem;
-    margin-bottom: 2rem;
-    font-size: 0.9rem;
-  }
-  .placeholder-notice strong { color: var(--signal); }
+  .legal ul { padding-left: 1.25rem; }
+  .legal li { margin-bottom: 0.4rem; }
